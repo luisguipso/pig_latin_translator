@@ -13,67 +13,85 @@ public class PigLatinTranslator {
 
 
     public String translate(String text) {
-        if (text == null || text.equals(""))
+        if (StringUtils.isBlank(text))
             return text;
 
         String[] words = text.split(" ");
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < words.length; i++) {
-            result.append(translateWord(words[i]));
-
-            if (i < words.length - 1)
+        for (int index = 0; index < words.length; index++) {
+            result.append(translateWord(words[index]));
+            if (isNotTheLastWord(words, index))
                 result.append(" ");
-
         }
-
-        System.out.println("text: " + text + " result: " + result.toString());
         return result.toString();
     }
 
+    private static boolean isNotTheLastWord(String[] words, int index) {
+        return index != words.length - 1;
+    }
+
     private static String translateWord(String word) {
-        int index = getIndex(word, VOWELS);
-        if(index == -1)
+        int indexOfFirstVowel = getIndexOfFirstVowel(word);
+        if (indexOfFirstVowel == -1)
             return word;
 
+        boolean wasFirstLetterCapital = isFirstLetterCapital(word);
+        word = word.toLowerCase();
+
         //remove punctuation
-        char lastCharOnTheWord = word.charAt(word.length() - 1);
-        String punctuation = "";
-        if (Pattern.matches("\\p{IsPunctuation}", String.valueOf(lastCharOnTheWord))) {
-            punctuation = String.valueOf(word.charAt(word.length() - 1));
-            word = word.substring(0, word.length() - 1);
+        String punctuation = null;
+        boolean wasEndedByPunctuation = isEndedByPunctuation(word);
+        if (wasEndedByPunctuation) {
+            punctuation = String.valueOf(getLastLetter(word));
+            word = removeLastChar(word);
         }
 
-        String firstPart = word.substring(index, word.length());
+        String firstPart = word.substring(indexOfFirstVowel);
+        String lastPart = word.substring(0, indexOfFirstVowel);
+        String result = firstPart + lastPart + POSTFIX;
 
-        //change first letter to capital
+        if (wasEndedByPunctuation)
+            result = result + punctuation;
 
-        if (isFirstLetterCapital(word)) {
-            word = word.toLowerCase();
-            String firstLetter = firstPart.substring(0, 1);
-            firstPart = firstPart.substring(1, firstPart.length());
-            firstPart = firstLetter.toUpperCase().concat(firstPart);
-        }
+        if (wasFirstLetterCapital)
+            result = makeNewFirstLetterCapital(result);
 
-        String lastPart = word.substring(0, index).concat(POSTFIX);
-        if (!StringUtils.isBlank(punctuation))
-            lastPart = lastPart.concat(punctuation);
-
-        String result = firstPart.concat(lastPart);
         return result;
+    }
+
+    private static int getIndexOfFirstVowel(String word) {
+        char[] letters = word.toCharArray();
+        for (char letter : letters)
+            if (VOWELS.contains(letter))
+                return word.indexOf(letter);
+        return -1;
     }
 
     private static boolean isFirstLetterCapital(String word) {
         return StringUtils.isAllUpperCase(String.valueOf(word.charAt(0)));
     }
 
-    private static int getIndex(String word, List<Character> vowels) {
-        for (char each : word.toCharArray()) {
-            for (Character eachVowel : vowels) {
-                if (eachVowel == each) {
-                    return word.indexOf(eachVowel);
-                }
-            }
-        }
-        return -1;
+    private static boolean isEndedByPunctuation(String word) {
+        String lastLetter = String.valueOf(getLastLetter(word));
+        return Pattern.matches("\\p{IsPunctuation}", lastLetter);
+    }
+
+    private static String removeLastChar(String word) {
+        return word.substring(0, word.length() - 1);
+    }
+
+    private static String makeNewFirstLetterCapital(String word) {
+        String firstLetter = word.substring(0, 1);
+        word = removeFirstLetter(word);
+        word = firstLetter.toUpperCase() + word;
+        return word;
+    }
+
+    private static String removeFirstLetter(String word) {
+        return word.substring(1);
+    }
+
+    private static char getLastLetter(String word) {
+        return word.charAt(word.length() - 1);
     }
 }
