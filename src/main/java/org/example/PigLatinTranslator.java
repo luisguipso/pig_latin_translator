@@ -46,9 +46,7 @@ public class PigLatinTranslator {
             word = removeLastChar(word);
         }
 
-        String firstPart = word.substring(indexOfFirstVowel);
-        String lastPart = word.substring(0, indexOfFirstVowel);
-        String result = firstPart + lastPart + POSTFIX;
+        String result = rearrangeWord(word, indexOfFirstVowel);
 
         if (wasEndedByPunctuation)
             result = result + punctuation;
@@ -57,6 +55,12 @@ public class PigLatinTranslator {
             result = makeNewFirstLetterCapital(result);
 
         return result;
+    }
+
+    private static String rearrangeWord(String word, int indexOfFirstVowel) {
+        String firstPart = word.substring(indexOfFirstVowel);
+        String lastPart = word.substring(0, indexOfFirstVowel);
+        return firstPart + lastPart + POSTFIX;
     }
 
     private static int getIndexOfFirstVowel(String word) {
