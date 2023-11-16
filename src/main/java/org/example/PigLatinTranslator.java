@@ -46,20 +46,24 @@ public class PigLatinTranslator {
         String firstPart = word.substring(index, word.length());
 
         //change first letter to capital
-        boolean begginsWithCapital = StringUtils.isAllUpperCase(String.valueOf(word.charAt(0)));
-        word = word.toLowerCase();
-        if (begginsWithCapital) {
+
+        if (isFirstLetterCapital(word)) {
+            word = word.toLowerCase();
             String firstLetter = firstPart.substring(0, 1);
             firstPart = firstPart.substring(1, firstPart.length());
             firstPart = firstLetter.toUpperCase().concat(firstPart);
         }
 
         String lastPart = word.substring(0, index).concat(POSTFIX);
-        if (punctuation != null && !punctuation.equals(""))
+        if (!StringUtils.isBlank(punctuation))
             lastPart = lastPart.concat(punctuation);
 
         String result = firstPart.concat(lastPart);
         return result;
+    }
+
+    private static boolean isFirstLetterCapital(String word) {
+        return StringUtils.isAllUpperCase(String.valueOf(word.charAt(0)));
     }
 
     private static int getIndex(String word, List<Character> vowels) {
