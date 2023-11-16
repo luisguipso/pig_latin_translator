@@ -9,6 +9,7 @@ public class PigLatinTranslator {
 
     public static final String POSTFIX = "ay";
     public static final String NO_CONSONANTS_POSTFIX = "yay";
+    public static final List<Character> VOWELS = List.of('a', 'e', 'i', 'o', 'u', 'y');
 
 
     public String translate(String text) {
@@ -16,24 +17,23 @@ public class PigLatinTranslator {
             return text;
 
         String[] words = text.split(" ");
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (int i = 0; i < words.length; i++) {
-            result = result + translateWord(words[i]);
+            result.append(translateWord(words[i]));
 
             if (i < words.length - 1)
-                result = result + " ";
+                result.append(" ");
 
         }
 
-        System.out.println("text: " + text + " result: " + result);
-        return result;
+        System.out.println("text: " + text + " result: " + result.toString());
+        return result.toString();
     }
 
     private static String translateWord(String word) {
-        List<Character> vowels = List.of('a', 'e', 'i', 'o', 'u', 'y');
-        int index = 0;
-        index = getIndex(word, vowels, index);
-
+        int index = getIndex(word, VOWELS);
+        if(index == -1)
+            return word;
 
         //remove punctuation
         char lastCharOnTheWord = word.charAt(word.length() - 1);
@@ -49,7 +49,6 @@ public class PigLatinTranslator {
         boolean begginsWithCapital = StringUtils.isAllUpperCase(String.valueOf(word.charAt(0)));
         word = word.toLowerCase();
         if (begginsWithCapital) {
-
             String firstLetter = firstPart.substring(0, 1);
             firstPart = firstPart.substring(1, firstPart.length());
             firstPart = firstLetter.toUpperCase().concat(firstPart);
@@ -63,7 +62,7 @@ public class PigLatinTranslator {
         return result;
     }
 
-    private static int getIndex(String word, List<Character> vowels, int index) {
+    private static int getIndex(String word, List<Character> vowels) {
         for (char each : word.toCharArray()) {
             for (Character eachVowel : vowels) {
                 if (eachVowel == each) {
@@ -71,6 +70,6 @@ public class PigLatinTranslator {
                 }
             }
         }
-        return index;
+        return -1;
     }
 }

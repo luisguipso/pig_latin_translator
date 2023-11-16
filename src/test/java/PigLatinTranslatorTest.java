@@ -1,44 +1,47 @@
 import org.example.PigLatinTranslator;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PigLatinTranslatorTest {
 
+    private PigLatinTranslator translator = new PigLatinTranslator();
+
     @Test
-    void translateStop(){
-//        PigLatinTranslator translator = new PigLatinTranslator();
-//        Assertions.assertEquals("opstay", translator.translate("stop"));
-//        Assertions.assertEquals("onay", translator.translate("no"));
-//        Assertions.assertEquals("eoplepay", translator.translate("people"));
-//        Assertions.assertEquals("ubblebay", translator.translate("bubble"));
-//        Assertions.assertEquals("underay", translator.translate("under"));
-//        Assertions.assertEquals("admitteday", translator.translate("admitted"));
-//        Assertions.assertEquals("awayay", translator.translate("away"));
+    void firstExerciseTests(){
+        assertEquals("opstay", translator.translate("stop"));
+        assertEquals("onay", translator.translate("no"));
+        assertEquals("eoplepay", translator.translate("people"));
+        assertEquals("ubblebay", translator.translate("bubble"));
+        assertEquals("underay", translator.translate("under"));
+        assertEquals("admitteday", translator.translate("admitted"));
+        assertEquals("awayay", translator.translate("away"));
     }
 
     @Test
-    void translateEmpty(){
-        PigLatinTranslator translator = new PigLatinTranslator();
+    void translateEmptyText(){
         assertEquals("", translator.translate(""));
     }
 
     @Test
-    void translateNull(){
-        PigLatinTranslator translator = new PigLatinTranslator();
+    void translateNullText(){
         assertEquals(null, translator.translate(null));
     }
 
     @Test
     void preservePunctuations(){
-        PigLatinTranslator translator = new PigLatinTranslator();
         assertEquals("Onay irtsshay,",
                 translator.translate("No shirts,"));
     }
 
     @Test
-    void translateAll(){
-        PigLatinTranslator translator = new PigLatinTranslator();
+    void ifTheWordHasNoConsonantShouldNotAddThePosfix(){
+        assertEquals("14", translator.translate("14"));
+    }
+
+    @Test
+    void secondExerciseTest(){
         assertEquals("Opstay", translator.translate("Stop"));
         assertEquals("Onay itteringlay", translator.translate("No littering"));
         assertEquals("Onay irtsshay, onay oesshay, onay ervicesay", translator.translate("No shirts, no shoes, no service"));
