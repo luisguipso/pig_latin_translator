@@ -37,6 +37,11 @@ class PigLatinTranslatorTest {
 
     @Test
     void ifTheWordHasNoConsonantShouldNotAddThePosfix(){
+        assertEquals("Iyay", translator.translate("I"));
+    }
+
+    @Test
+    void aWordWithNoVowelShouldNotChange(){
         assertEquals("14", translator.translate("14"));
     }
 
