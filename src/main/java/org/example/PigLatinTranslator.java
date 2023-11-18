@@ -2,8 +2,6 @@ package org.example;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
-
 public class PigLatinTranslator {
 
     public String translate(String text) {
@@ -30,10 +28,10 @@ public class PigLatinTranslator {
 
         PigLatinReorganizer commandsChain = new PigLatinReorganizer(
                 new PigLatinPostfixAppender(
-                        new PigLatinCapitalizer(null)));
+                        new PigLatinCapitalizer(
+                                new PigLatinPunctuator(null)
+                        )));
         return commandsChain.execute(word).getWord();
-
-        //return new PigLatinWordTranslator(word).translate();
     }
 
     private boolean hasLetters(String word) {
